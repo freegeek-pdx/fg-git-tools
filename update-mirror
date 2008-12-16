@@ -13,6 +13,7 @@ for i in fgdb.rb freegeek-extras fgdiag fg-git-tools; do
     git fetch origin --quiet
     git fetch origin --tags --quiet
     for i in $(git branch -r | awk -F / '/^  origin./{print $2}'); do git branch -f $i origin/$i >/dev/null; done
+    echo "Mirror of $(basename $(pwd)): $(ssh $(git-config remote.origin.url | awk -F: '{print $1}') cat $(git-config remote.origin.url | awk -F: '{print $2}')/description)" > description
     chmod -R a-w .
     cd ..
 done
