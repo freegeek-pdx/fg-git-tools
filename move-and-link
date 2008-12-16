@@ -1,7 +1,8 @@
 #!/bin/sh
 
-SRC=$(readlink -f $1)
-DEST=$(readlink -f $2)
+set -e
 
-mv $SRC $DEST
+SRC=$(readlink -f $1)
+mv $SRC $2
+DEST=$(readlink -f $2/$(basename $1))
 ln -s $DEST $SRC
