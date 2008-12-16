@@ -1,5 +1,12 @@
 #!/bin/sh
 #
+
+
+# LOOK HERE!!!!
+# RUN THIS:::
+# > git config hooks.mailinglist fgdb-commits@lists.freegeek.org; git config hooks.envelopesender svn@freegeek.org
+
+
 # Copyright (c) 2007 Andy Parkins
 #
 # An example hook script to mail out commit update information.  This hook
