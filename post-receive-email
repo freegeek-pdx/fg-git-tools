@@ -421,7 +421,7 @@ generate_update_branch_email()
 	git diff-tree --stat --summary --find-copies-harder $oldrev..$newrev
 	echo ""
 	echo "Diff of changes:"
-	git diff-tree --patch-with-raw --find-copies-harder $oldrev..$newrev
+	git diff-tree -p --find-copies-harder $oldrev..$newrev
 }
 
 #
