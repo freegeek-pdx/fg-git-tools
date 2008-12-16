@@ -1,0 +1,76 @@
+#!/bin/bash
+
+# Downloaded from: ryan52.info/~ryan52/create_project
+
+set -e
+
+# Set your domain name here, as you want it to be displayed:
+HOSTNAME=git.freegeek.org
+OTHER_HOSTNAME=git.ryan52.info
+
+usage(){
+    echo "Usage: $(basename $0) [--update] projectname|all"
+    exit 1
+}
+
+update(){
+    [ "$UPDATE" = "true" ]
+}
+
+UPDATE="false"
+
+if [ "$1" = "--update" ]; then
+    PROJECT="$2"
+    UPDATE="true"
+else
+    PROJECT="$1"
+fi
+
+if [ -z "$PROJECT" ]; then
+    usage
+fi
+
+if [ "$PROJECT" = "all" ]; then
+    if update; then
+	for i in /git/*; do
+	    $0 --update $(basename $i)
+	done
+	exit $?
+    else
+	usage
+    fi
+fi
+
+if [ -d "/git/$PROJECT" ] && ! update; then
+    echo "Project already exists"
+    exit 1
+fi
+
+if [ ! -d "/git/$PROJECT" ] && update; then
+    echo "Project does not exist"
+    exit 1
+fi
+
+if ! update; then
+    echo -n "Project description: "
+    read DESC
+    if [ "$?" != "0" ]; then
+	echo "Aborted."
+	exit 1
+    fi
+    cd /git
+    sudo mkdir $PROJECT
+    cd $PROJECT
+    sudo chown $USER:svn /git/$PROJECT/
+    git --bare init --shared
+    echo "$DESC" > /git/$PROJECT/description
+fi
+
+sudo chown -R $USER:svn /git/$PROJECT/
+echo "git://$OTHER_HOSTNAME/git/$PROJECT" > /git/$PROJECT/cloneurl
+echo "$HOSTNAME:/git/$PROJECT" >> /git/$PROJECT/cloneurl
+echo "wget --quiet -O - http://ryan52.info/update-mirror.php" > /git/$PROJECT/hooks/post-update
+echo "exec git-update-server-info" >> /git/$PROJECT/hooks/post-update
+chmod +x /git/$PROJECT/hooks/post-update
+ln -sf /usr/local/ass/configs/svn/git-post-receive /git/$PROJECT/hooks/post-receive
+touch /git/$PROJECT/git-daemon-export-ok
