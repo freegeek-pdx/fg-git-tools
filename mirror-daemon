@@ -1,0 +1,13 @@
+#!/bin/sh
+
+# run as a daemon
+[ ! -t 0 ] || exec /usr/local/bin/daemon "$(readlink -f $0)" "$@"
+
+while true; do
+    if [ -f /tmp/update-requested ]; then
+	sudo rm /tmp/update-requested
+	/home/ryan52/update-mirror || touch /tmp/update-requested
+    else
+	sleep 1
+    fi
+done

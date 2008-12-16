@@ -1,0 +1,18 @@
+#!/bin/sh
+
+for i in fgdb.rb freegeek-extras fgdiag fg-git-tools; do
+    if [ ! -d /git/$i ]; then
+	create_project --nodesc $i </dev/null
+	cd /git/$i
+	echo '[remote "origin"]' >> /git/$i/config
+	echo "url = dev.freegeek.org:/git/$i" >> /git/$i/config
+	echo 'fetch = +refs/heads/*:refs/remotes/origin/*' >> /git/$i/config
+    fi
+    cd /git/$i
+    chmod -R u+w .
+    git fetch origin --quiet
+    git fetch origin --tags --quiet
+    for i in $(git branch -r | awk -F / '/^  origin./{print $2}'); do git branch -f $i origin/$i >/dev/null; done
+    chmod -R a-w .
+    cd ..
+done
