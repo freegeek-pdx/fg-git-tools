@@ -72,5 +72,5 @@ echo "$HOSTNAME:/git/$PROJECT" >> /git/$PROJECT/cloneurl
 echo "wget --quiet -O - http://ryan52.info/update-mirror.php" > /git/$PROJECT/hooks/post-update
 echo "exec git-update-server-info" >> /git/$PROJECT/hooks/post-update
 chmod +x /git/$PROJECT/hooks/post-update
-ln -sf /usr/local/ass/configs/svn/git-post-receive /git/$PROJECT/hooks/post-receive
+ln -sf /home/ryan52/fg-git-tools/post-receive-email /git/$PROJECT/hooks/post-receive
 touch /git/$PROJECT/git-daemon-export-ok
