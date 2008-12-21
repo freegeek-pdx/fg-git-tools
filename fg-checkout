@@ -3,8 +3,8 @@
 set -e
 
 if [ -z "$1" ]; then
-   "Usage: $(basename $0) reponame"
-   exit 1
+    echo "Usage: $(basename $0) reponame"
+    exit 1
 fi
 
 git clone git://git.ryan52.info/git/$1 $1
