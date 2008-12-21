@@ -1,6 +1,6 @@
 #!/bin/sh
 
-for i in fgdb.rb freegeek-extras fgdiag fg-git-tools; do
+for i in fgdb.rb freegeek-extras fgdiag fg-git-tools rubytui; do
     if [ ! -d /git/$i ]; then
 	create_project --nodesc $i </dev/null
 	cd /git/$i
