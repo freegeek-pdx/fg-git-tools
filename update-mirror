@@ -1,19 +1,27 @@
 #!/bin/sh
 
-for i in fgdb.rb freegeek-extras fgdiag fg-git-tools rubytui; do
-    if [ ! -d /git/$i ]; then
-	create_project --nodesc $i </dev/null
-	cd /git/$i
-	echo '[remote "origin"]' >> /git/$i/config
-	echo "url = dev.freegeek.org:/git/$i" >> /git/$i/config
-	echo 'fetch = +refs/heads/*:refs/remotes/origin/*' >> /git/$i/config
+set -e
+
+# yay! somebody can easily make this script do stupid things! :p
+
+if [ -n "$(ls /tmp/git/* 2>/dev/null)" ]; then
+for i2 in /tmp/git/*; do
+    i="$(basename "$i2")"
+    if [ ! -d "/git/$i" ]; then
+	/home/ryan52/fg-git-tools/vps-create_project --nodesc "$i" </dev/null
+	cd "/git/$i"
+	echo '[remote "origin"]' >> "/git/$i/config"
+	echo "url = dev.freegeek.org:/git/$i" >> "/git/$i/config"
+	echo 'fetch = +refs/heads/*:refs/remotes/origin/*' >> "/git/$i/config"
     fi
-    cd /git/$i
+    cd "/git/$i"
     chmod -R u+w .
     git fetch origin --quiet
     git fetch origin --tags --quiet
-    for i in $(git branch -r | awk -F / '/^  origin./{print $2}'); do git branch -f $i origin/$i >/dev/null; done
+    for i3 in $(git branch -r | awk -F / '/^  origin./{print $2}'); do git branch -f "$i3" "origin/$i3" >/dev/null; done
     echo "Mirror of $(basename $(pwd)): $(ssh $(git-config remote.origin.url | awk -F: '{print $1}') cat $(git-config remote.origin.url | awk -F: '{print $2}')/description)" > description
     chmod -R a-w .
     cd ..
+    rm "$i2"
 done
+fi
