@@ -1,0 +1,2 @@
+wget --quiet -O - "http://ryan52.info/update-mirror.php?project=$(basename $(readlink -f $(dirname $(dirname $0))))&type=git"
+exec git-update-server-info
