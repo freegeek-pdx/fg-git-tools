@@ -1,0 +1,13 @@
+#!/bin/sh
+
+set -e
+
+if [ -z "$1" ]; then
+    echo "Usage: $(basename $0) reponame"
+    exit 1
+fi
+
+git clone git://git.ryan52.info/git/$1 $1
+cd $1
+git remote add fg dev.freegeek.org:/git/$1
+git fetch fg
