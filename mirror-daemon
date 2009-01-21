@@ -1,7 +1,9 @@
 #!/bin/sh
 
 # run as a daemon
-[ ! -t 0 ] || exec /usr/local/bin/daemon "$(readlink -f $0)" "$@"
+# TODO: use start-stop-daemon with the --background option
+[ "$1" = "go" ] || exec /usr/local/bin/daemon "$(readlink -f $0)" "go" "$@"
+shift
 
 while true; do
     if [ -f /tmp/update-requested ]; then
