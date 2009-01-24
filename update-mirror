@@ -22,6 +22,6 @@ for i2 in /tmp/git/*; do
     echo "Mirror of $(basename $(pwd)): $(ssh $(git-config remote.origin.url | awk -F: '{print $1}') cat $(git-config remote.origin.url | awk -F: '{print $2}')/description)" > description
     chmod -R a-w .
     cd ..
-    rm "$i2"
+    sudo rm "$i2"
 done
 fi
