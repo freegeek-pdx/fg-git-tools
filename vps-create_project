@@ -3,7 +3,7 @@
 # Downloaded from: ryan52.info/~ryan52/create_project
 
 # Set your domain name here, as you want it to be displayed:
-HOSTNAME=git.ryan52.info
+HOSTNAME=git.freegeek.org
 
 usage(){
     echo "Usage: $(basename $0) [--update] projectname|all"

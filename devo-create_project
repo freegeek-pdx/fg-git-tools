@@ -6,7 +6,7 @@ set -e
 
 # Set your domain name here, as you want it to be displayed:
 HOSTNAME=git.freegeek.org
-OTHER_HOSTNAME=git.ryan52.info
+OTHER_HOSTNAME=git.freegeek.info
 
 usage(){
     echo "Usage: $(basename $0) [--update] projectname|all"

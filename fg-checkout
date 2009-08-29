@@ -7,7 +7,7 @@ if [ -z "$1" ]; then
     exit 1
 fi
 
-git clone git://git.ryan52.info/git/$1 $1
+git clone git://git.freegeek.org/git/$1 $1
 cd $1
 git remote add fg dev.freegeek.org:/git/$1
 git fetch fg
