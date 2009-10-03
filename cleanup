@@ -9,11 +9,11 @@ fi
 
 usage(){
 echo "======================================"
-echo "Current usage: $(du -sh /git | sed 's/\s.*//')"
+echo "Current usage: $(du -sh . | sed 's/\s.*//')"
 echo "======================================"
 }
 
+cd /git
 usage
-cd `dirname $0`
 for i in `ls | grep -v cleanup`; do cd $i; git gc; git repack; git repack -Ad; git gc; cd ..; done
 usage
