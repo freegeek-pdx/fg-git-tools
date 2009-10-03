@@ -1,0 +1,19 @@
+#!/bin/sh
+
+U=ryan52
+
+if [ "$(id -un)" != "$U" ]; then
+    su - "$U" -c "$0"
+    exit $?
+fi
+
+usage(){
+echo "======================================"
+echo "Current usage: $(du -sh /git | sed 's/\s.*//')"
+echo "======================================"
+}
+
+usage
+cd `dirname $0`
+for i in `ls | grep -v cleanup`; do cd $i; git gc; git repack; git repack -Ad; git gc; cd ..; done
+usage
