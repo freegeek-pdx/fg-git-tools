@@ -3,7 +3,14 @@
 # Downloaded from: ryan52.info/~ryan52/create_project
 
 # Set your domain name here, as you want it to be displayed:
-HOSTNAME=git.freegeek.org
+if hostname -f | grep -q xyzzy; then
+    HOSTNAME=git.ryan52.info
+elif hostname -f | grep -q oahu; then
+    HOSTNAME=git.freegeek.org
+else
+    echo "Unknown host: $(hostname -f)"
+    exit 1
+fi
 
 usage(){
     echo "Usage: $(basename $0) [--update] projectname|all"
