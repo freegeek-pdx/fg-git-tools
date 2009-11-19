@@ -24,10 +24,11 @@ clean(){
     if [ "$READONLY" = "t" ]; then
 	chmod -R u+w .
     fi
+    git prune
     git gc
-    git repack
-    git repack -Ad
-    git gc
+    git repack -f -A -d --depth=500 --window=500
+    git prune
+    git gc --aggressive
     if [ "$READONLY" = "t" ]; then
 	chmod -R a-w .
     fi
