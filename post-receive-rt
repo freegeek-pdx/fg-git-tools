@@ -6,6 +6,7 @@ export GIT_DIR=./.git
 quiet () {
     cat >/dev/null
 }
+umask u=rwx,g=rwx,o=rx
 if [ ! -d $name ]; then
     git clone -q /git/$name  | quiet
     cd $name
