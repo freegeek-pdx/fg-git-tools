@@ -79,7 +79,7 @@ foreach my $entry(@entries) {
   foreach my $bug(@closes) {
     my $ticket = RT::Client::REST::Ticket->new(rt => $rt, id => $bug)->retrieve;
     if($ticket->status ne $status) {
-      print $action . " #" $bug . "\n";
+      print $action . " #" . $bug . "\n";
       my $msg = $message . $entry;
       $rt->correspond(ticket_id => $ticket->id, message => $msg);
       $ticket->status($status);
