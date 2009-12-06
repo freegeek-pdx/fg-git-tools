@@ -13,7 +13,7 @@ if [ ! -d $name ]; then
     cd $name
 else
     cd $name
-    git pull -q
+    git fetch -q
 fi
 pwd
 while read oldrev newrev refname; do
