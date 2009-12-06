@@ -7,6 +7,7 @@ cat | tee $tempfile | $git_tools/post-receive-email
 cd /tmp/
 export PATH=.:$PATH
 export RTCONFIG=/usr/local/ass/configs/svn/rtrc
+export GIT_DIR=./.git
 if [ ! -d $name ]; then
     git clone -q /git/$name
     cd $name
