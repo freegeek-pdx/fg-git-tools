@@ -1,2 +1,19 @@
-wget --quiet -O - "http://mirror.freegeek.org/update-mirror.php?project=$(basename $(readlink -f $(dirname $(dirname $0))))&type=git"
+name=$(basename $(readlink -f $(dirname $(dirname $0))))
+git_tools=$(dirname $(readlink -f $0))
+wget --quiet -O - "http://mirror.freegeek.org/update-mirror.php?project=$name&type=git"
+cd /tmp/
+if [ ! -d $name ]; then
+    git clone -q /git/$name
+else
+    cd $name
+    git pull -q
+fi
+export PATH=.:$PATH
+# TODO: on all release branches, close the bugs. on all non-release
+# branches (master or topic), pending them. This will also mean
+# release doesn't need to do this any longer.
+# TODO: only run this on the changed branch. The email hook
+# obviously can tell, so we should steal code from there.
+# TODO: run this with a config file for the ticketcloser user.
+RTCONFIG=/usr/local/ass/configs/svn/rtrc $git_tools/rt/RT-close.pl --pending
 exec git-update-server-info
