@@ -5,6 +5,6 @@ name=$(basename $(readlink -f $(dirname $(dirname $0))))
 git_tools=$(dirname $(readlink -f $0))
 cat | tee $tempfile | $git_tools/post-receive-email
 export tempfile name git_tools
-cd /tmp/ # directory that checkouts are in
+cd /var/cache/git-checkouts/ # directory that checkouts are in. "mkdir /var/cache/git-checkouts/; chown ryan52:svn /var/cache/git-checkouts/; chmod g+sw /var/cache/git-checkouts/"
 # flock -w 1000000000000000000000000000 $name.lock -c "$git_tools/post-receive-rt"
 $git_tools/post-receive-rt
