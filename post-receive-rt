@@ -9,7 +9,7 @@ quiet () {
 umask u=rwx,g=rwx,o=rx
 if [ ! -d $name ]; then
     mkdir $name
-    chmod g+ws
+    chmod g+ws $name
     cd $name
     git init -q --shared | quiet
     git remote add origin /git/$name
