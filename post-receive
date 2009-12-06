@@ -18,7 +18,7 @@ if [ ! -d $name ]; then
     cd $name
 else
     cd $name
-    git fetch -q  | quiet
+    git fetch -q 2>&1 | quiet
 fi
 while read oldrev newrev refname; do
     branch=$(basename $refname)
