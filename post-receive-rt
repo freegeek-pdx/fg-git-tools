@@ -11,14 +11,12 @@ quiet () {
 if [ ! -d $name ]; then
     mkdir $name
     cd $name
-    git init -q -s | quiet
+    git init -q --shared | quiet
     git remote add origin /git/$name
-    git clone -q /git/$name  | quiet
-    cd $name
 else
     cd $name
-    git fetch -q 2>&1 | quiet
 fi
+git fetch -q origin 2>&1 | quiet
 while read oldrev newrev refname; do
     branch=$(basename $refname)
     if [ -f .git/refs/remotes/origin/$branch ]; then # it's a branch
