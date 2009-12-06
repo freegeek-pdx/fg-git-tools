@@ -19,20 +19,20 @@ pwd
 while read oldrev newrev refname; do
     branch=$(basename $refname)
     if [ -f .git/refs/remotes/origin/$branch ]; then # it's a branch
-        if [ -f .git/refs/heads/$i ]; then
-            git checkout $i
+        if [ -f .git/refs/heads/$branch ]; then
+            git checkout $branch
             git pull
         else
-            git checkout -b $i origin/$i
+            git checkout -b $branch origin/$branch
         fi
-        if echo $i | grep -q ^release_; then
+        if echo $branch | grep -q ^release_; then
             $git_tools/rt/RT-close.pl --close
         else
             $git_tools/rt/RT-close.pl --pending
         fi
     else # it's a tag
         git branch -D temptag || true
-        git checkout -b temptag $i
+        git checkout -b temptag $branch
         $git_tools/rt/RT-close.pl --close
     fi
 done < $tempfile
