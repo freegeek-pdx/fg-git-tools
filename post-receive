@@ -14,6 +14,7 @@ else
     cd $name
     git pull -q
 fi
+pwd
 while read oldrev newrev refname; do
     branch=$(basename $refname)
     if [ -f .git/refs/remotes/origin/$branch ]; then # it's a branch
