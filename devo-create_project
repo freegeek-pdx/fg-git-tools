@@ -81,6 +81,6 @@ sudo chown -R $USER:svn /git/$PROJECT/
 echo "git://$OTHER_HOSTNAME/git/$PROJECT" > /git/$PROJECT/cloneurl
 echo "$HOSTNAME:/git/$PROJECT" >> /git/$PROJECT/cloneurl
 grep -q mailinglist /git/$PROJECT/config || add_ml
-ln -sf /home/ryan52/fg-git-tools/post-receive-email /git/$PROJECT/hooks/post-receive
+ln -sf /home/ryan52/fg-git-tools/post-receive /git/$PROJECT/hooks/post-receive
 ln -sf /home/ryan52/fg-git-tools/post-update /git/$PROJECT/hooks/post-update
 touch /git/$PROJECT/git-daemon-export-ok
