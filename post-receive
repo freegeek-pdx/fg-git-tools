@@ -1,7 +1,5 @@
 #!/bin/sh
 
-set -x
-
 tempfile=$(mktemp)
 name=$(basename $(readlink -f $(dirname $(dirname $0))))
 git_tools=$(dirname $(readlink -f $0))
