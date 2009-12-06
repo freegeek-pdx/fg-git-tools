@@ -33,4 +33,5 @@ while read oldrev newrev refname; do
         $git_tools/rt/RT-close.pl --close
     fi
 done < $tempfile
+git checkout -q master
 rm $tempfile
