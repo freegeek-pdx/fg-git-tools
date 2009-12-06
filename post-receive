@@ -4,38 +4,5 @@ tempfile=$(mktemp)
 name=$(basename $(readlink -f $(dirname $(dirname $0))))
 git_tools=$(dirname $(readlink -f $0))
 cat | tee $tempfile | $git_tools/post-receive-email
-cd /tmp/
-export PATH=.:$PATH
-export RTCONFIG=/usr/local/ass/configs/svn/rtrc
-export GIT_DIR=./.git
-quiet () {
-    cat >/dev/null
-}
-if [ ! -d $name ]; then
-    git clone -q /git/$name  | quiet
-    cd $name
-else
-    cd $name
-    git fetch -q 2>&1 | quiet
-fi
-while read oldrev newrev refname; do
-    branch=$(basename $refname)
-    if [ -f .git/refs/remotes/origin/$branch ]; then # it's a branch
-        if [ -f .git/refs/heads/$branch ]; then
-            git checkout -q $branch  | quiet
-            git pull -q  | quiet
-        else
-            git checkout -q -b $branch origin/$branch | quiet
-        fi
-        if echo $branch | grep -q ^release_; then
-            $git_tools/rt/RT-close.pl --close
-        else
-            $git_tools/rt/RT-close.pl --pending
-        fi
-    else # it's a tag
-        { git branch -q -D temptag 2>&1 || true; } | quiet
-        git checkout -q -b temptag $branch | quiet
-        $git_tools/rt/RT-close.pl --close
-    fi
-done < $tempfile
-rm $tempfile
+export tempfile name git_tools
+$git_tools/post-receive-rt
