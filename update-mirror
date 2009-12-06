@@ -4,8 +4,6 @@
 
 set -e
 
-# yay! somebody can easily make this script do stupid things! :p
-
 if [ -n "$(ls /tmp/git/* 2>/dev/null)" ]; then
 for i2 in /tmp/git/*; do
     i="$(basename "$i2")"
