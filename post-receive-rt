@@ -1,6 +1,5 @@
 #!/bin/sh
 
-cd /tmp/
 export PATH=.:$PATH
 export RTCONFIG=/usr/local/ass/configs/svn/rtrc
 export GIT_DIR=./.git
