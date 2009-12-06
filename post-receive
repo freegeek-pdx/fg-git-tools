@@ -6,4 +6,5 @@ git_tools=$(dirname $(readlink -f $0))
 cat | tee $tempfile | $git_tools/post-receive-email
 export tempfile name git_tools
 cd /tmp/ # directory that checkouts are in
-flock -w 1000000000000000000000000000 $name.lock -c "$git_tools/post-receive-rt"
+# flock -w 1000000000000000000000000000 $name.lock -c "$git_tools/post-receive-rt"
+$git_tools/post-receive-rt
