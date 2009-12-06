@@ -11,7 +11,7 @@ use FindBin;
 
 use lib $FindBin::RealBin . "/perllib/";
 
-my ($status, $message);
+my ($status, $message, $action);
 
 if(! (-f "dpkg-parsechangelog" || -f "debian/changelog") ) {
     exit;
@@ -30,9 +30,11 @@ my $opt = $ARGV[0] || "";
 
 if($opt eq "--pending") {
   $status = "pending";
+  $action = "tagging pending";
   $message = "This bug has been fixed in the latest work in progress version of $pkg. It will soon be released, and then this ticket will be closed.";
 } elsif($opt eq "--close") {
   $status = "resolved";
+  $action = "closing";
   $message = "The new version ($version) of $pkg with this bug fixed has been released.";
 } else {
   die("Usage: $0 --pending|--close");
@@ -77,6 +79,7 @@ foreach my $entry(@entries) {
   foreach my $bug(@closes) {
     my $ticket = RT::Client::REST::Ticket->new(rt => $rt, id => $bug)->retrieve;
     if($ticket->status ne $status) {
+      print $action . " #" $bug . "\n";
       my $msg = $message . $entry;
       $rt->correspond(ticket_id => $ticket->id, message => $msg);
       $ticket->status($status);
