@@ -13,6 +13,10 @@ use lib $FindBin::RealBin . "/perllib/";
 
 my ($status, $message);
 
+if(! (-f "dpkg-parsechangelog" || -f "debian/changelog") ) {
+    exit;
+}
+
 open FOO, "dpkg-parsechangelog|";
 my @list = <FOO>;
 close FOO;
@@ -22,10 +26,12 @@ my $version = @{[split(/ /, $list[1])]}[1];
 chomp $pkg;
 chomp $version;
 
-if($ARGV[0] eq "--pending") {
+my $opt = $ARGV[0] || "";
+
+if($opt eq "--pending") {
   $status = "pending";
   $message = "This bug has been fixed in the latest work in progress version of $pkg. It will soon be released, and then this ticket will be closed.";
-} elsif($ARGV[0] eq "--close") {
+} elsif($opt eq "--close") {
   $status = "resolved";
   $message = "The new version ($version) of $pkg with this bug fixed has been released.";
 } else {
