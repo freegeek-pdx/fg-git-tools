@@ -29,7 +29,9 @@ while read oldrev newrev refname; do
         if echo $branch | grep -q ^release_; then
             $git_tools/rt/RT-close.pl --close
         else
-            $git_tools/rt/RT-close.pl --pending
+            if [ "$(dpkg-parsechangelog 2>/dev/null | grep ^Dist | cut -d ' ' -f 2)" = "UNRELEASED" ]; then
+                $git_tools/rt/RT-close.pl --pending
+            fi
         fi
     else # it's a tag
         { git branch -q -D temptag 2>&1 || true; } | quiet
