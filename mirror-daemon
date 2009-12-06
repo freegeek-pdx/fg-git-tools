@@ -5,6 +5,8 @@
 [ "$1" = "go" ] || exec /usr/local/bin/daemon "$(readlink -f $0)" "go" "$@"
 shift
 
+# TODO: use inotify-tools
+
 while true; do
     if [ -f /tmp/update-requested ]; then
 	sudo rm /tmp/update-requested
