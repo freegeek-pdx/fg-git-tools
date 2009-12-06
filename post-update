@@ -1,6 +1,12 @@
+git-update-server-info
 name=$(basename $(readlink -f $(dirname $(dirname $0))))
 git_tools=$(dirname $(readlink -f $0))
 wget --quiet -O - "http://mirror.freegeek.org/update-mirror.php?project=$name&type=git"
+exit
+# TODO: only run this on the changed branch. The email hook
+# obviously can tell, so we should steal code from there.
+# TODO: on master, don't touch already closed things. check for the
+# dist if it's UNRELEASED.
 cd /tmp/
 if [ ! -d $name ]; then
     git clone -q /git/$name
@@ -9,11 +15,22 @@ else
     git pull -q
 fi
 export PATH=.:$PATH
-# TODO: on all release branches, close the bugs. on all non-release
-# branches (master or topic), pending them. This will also mean
-# release doesn't need to do this any longer.
-# TODO: only run this on the changed branch. The email hook
-# obviously can tell, so we should steal code from there.
-# TODO: run this with a config file for the ticketcloser user.
-RTCONFIG=/usr/local/ass/configs/svn/rtrc $git_tools/rt/RT-close.pl --pending
-exec git-update-server-info
+export RTCONFIG=/usr/local/ass/configs/svn/rtrc
+for i in $(GIT_DIR=/git/fgdb.rb git branch | sed 's/^*/ /'); do
+    if [ -f .git/refs/heads/$i ]; then
+        git checkout $i
+        git pull
+    else
+        git checkout -b $i origin/$i
+    fi
+    if echo $i | grep -q ^release_; then
+        $git_tools/rt/RT-close.pl --close
+    else
+        $git_tools/rt/RT-close.pl --pending
+    fi
+done
+for i in $(git tag); do
+    git branch -D temptag || true
+    git checkout -b temptag $i
+    $git_tools/rt/RT-close.pl --close
+fi
