@@ -9,6 +9,7 @@ export PATH=.:$PATH
 export RTCONFIG=/usr/local/ass/configs/svn/rtrc
 if [ ! -d $name ]; then
     git clone -q /git/$name
+    cd $name
 else
     cd $name
     git pull -q
