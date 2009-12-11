@@ -1,2 +1,3 @@
+name=$(basename $(readlink -f $(dirname $(dirname $0))))
 wget --quiet -O - "http://mirror.freegeek.org/update-mirror.php?project=$name&type=git"
 exec git-update-server-info
