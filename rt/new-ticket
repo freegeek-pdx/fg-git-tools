@@ -12,7 +12,7 @@ my $rt = RT::Client::REST::FromConfig->new();
 use RT::Client::REST::Ticket;
 
 my $subject = $ARGV[0];
-my $priority = 50;
+my $priority = 99;
 my $owner = 'ryan52';
 my $queue = 'Coding';
 
