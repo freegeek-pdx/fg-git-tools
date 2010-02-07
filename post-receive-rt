@@ -40,4 +40,4 @@ while read oldrev newrev refname; do
     fi
 done < $tempfile
 git checkout -q master
-rm $tempfile
+
