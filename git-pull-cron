@@ -1,0 +1,25 @@
+#!/bin/sh
+
+if [ -z "$1" ]; then
+   echo "Usage: $(basename $0) directory"
+   exit 1
+fi
+
+if [ ! -d "$1" ]; then
+    echo "$1 is not a directory"
+    exit 1
+fi
+
+if [ ! -d "${1}/.git" ]; then
+    echo "$1 is not git checkout"
+    exit 1
+fi
+
+RET=23
+T=$(mktemp)
+cd "$1"
+git pull 2>&1 > $T
+RET=$?
+cat $T | grep -v Already
+rm $T
+exit $RET
