@@ -34,8 +34,8 @@ while read oldrev newrev refname; do
             fi
         fi
     else # it's a tag
-        { git branch -q -D temptag 2>&1 || true; } | quiet
-        git checkout -q -b temptag $branch | quiet
+        { git branch -D temptag 2>&1 || true; } | quiet
+        git checkout -b temptag $branch | quiet
         $git_tools/rt/RT-close.pl --close
     fi
 done < $tempfile
