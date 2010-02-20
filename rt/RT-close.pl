@@ -30,7 +30,7 @@ my $opt = $ARGV[0] || "";
 
 my @restrict = ();
 
-my $debug = 0;
+my $debug = 1;
 
 if($opt eq "--git") {
     my $oldref = $ARGV[1];
@@ -41,11 +41,11 @@ if($opt eq "--git") {
     chomp $newref;
     if(!($oldref =~ /^0*$/ || $newref =~ /^0*$/)) {
         my $diff = `git diff $oldref..$newref | filterdiff -i '*ChangeLog*' -i '*changelog*' | grep ^+`;
-        if(length($diff) == 0) {
+        @restrict = get_closes($diff);
+	if(scalar(@restrict) == 0) {
             print "No bugs to check\n" if($debug);
             exit;
-        }
-        @restrict = get_closes($diff);
+	}
     }
     $opt = $ARGV[3] || "";
 }
