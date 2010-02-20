@@ -23,6 +23,7 @@ fi
 git fetch -q origin 2>&1 | quiet
 while read oldrev newrev refname; do
     branch=$(basename $refname)
+    mode=""
     if [ -f .git/refs/remotes/origin/$branch ]; then # it's a branch
         if [ -f .git/refs/heads/$branch ]; then
             git checkout -q $branch | quiet
@@ -31,16 +32,19 @@ while read oldrev newrev refname; do
             git checkout -q -b $branch origin/$branch | quiet
         fi
         if echo $branch | grep -q ^release_; then
-            rt_close --close
+	    mode="--close"
         else
             if [ "$(dpkg-parsechangelog 2>/dev/null | grep ^Dist | cut -d ' ' -f 2)" = "UNRELEASED" ]; then
-                rt_close --pending
+		mode="--pending"
             fi
         fi
     else # it's a tag
         { git branch -D temptag 2>&1 || true; } | quiet
         git checkout -b temptag $branch | quiet
-        rt_close --close
+	mode="--close"
+    fi
+    if [ -n "$mode" ]; then
+	rt_close --git $oldrev $newrev $mode
     fi
 done < $tempfile
 git checkout -q master
