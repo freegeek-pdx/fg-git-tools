@@ -6,6 +6,10 @@ export GIT_DIR=./.git
 quiet () {
     cat >/dev/null
 }
+rt_close() {
+    echo RT-close "$@" on "$(cat .git/HEAD | cut -d / -f 3)" "($branch)"
+    $git_tools/rt/RT-close.pl "$@"
+}
 umask u=rwx,g=rwx,o=rx
 if [ ! -d $name ]; then
     mkdir $name
@@ -27,17 +31,17 @@ while read oldrev newrev refname; do
             git checkout -q -b $branch origin/$branch | quiet
         fi
         if echo $branch | grep -q ^release_; then
-            $git_tools/rt/RT-close.pl --close
+            rt_close --close
         else
             if [ "$(dpkg-parsechangelog 2>/dev/null | grep ^Dist | cut -d ' ' -f 2)" = "UNRELEASED" ]; then
-                $git_tools/rt/RT-close.pl --pending
+                rt_close --pending
             fi
         fi
     else # it's a tag
-        { git branch -q -D temptag 2>&1 || true; } | quiet
-        git checkout -q -b temptag $branch | quiet
-        $git_tools/rt/RT-close.pl --close
+        { git branch -D temptag 2>&1 || true; } | quiet
+        git checkout -b temptag $branch | quiet
+        rt_close --close
     fi
 done < $tempfile
 git checkout -q master
-rm $tempfile
+

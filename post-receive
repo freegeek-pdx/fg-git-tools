@@ -3,8 +3,14 @@
 tempfile=$(mktemp)
 name=$(basename $(readlink -f $(dirname $(dirname $0))))
 git_tools=$(dirname $(readlink -f $0))
-cat | tee $tempfile | $git_tools/post-receive-email
+cat > $tempfile
+if [ -z "$(git config hooks.fgnomail)" ]; then
+    cat $tempfile | $git_tools/post-receive-email
+fi
 export tempfile name git_tools
-cd /var/cache/git-checkouts/ # directory that checkouts are in. "mkdir /var/cache/git-checkouts/; chown ryan52:svn /var/cache/git-checkouts/; chmod g+sw /var/cache/git-checkouts/"
 # flock -w 1000000000000000000000000000 $name.lock -c "$git_tools/post-receive-rt"
-$git_tools/post-receive-rt
+if [ -z "$(git config hooks.fgnort)" ]; then
+    cd /var/cache/git-checkouts/ # directory that checkouts are in. "mkdir /var/cache/git-checkouts/; chown ryan52:svn /var/cache/git-checkouts/; chmod g+sw /var/cache/git-checkouts/"
+    $git_tools/post-receive-rt
+fi
+rm $tempfile
