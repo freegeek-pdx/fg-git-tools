@@ -1,10 +1,5 @@
 #!/bin/sh
 
-if [ -z "$1" ]; then
-   echo "Must pass at least 1 ticket number"
-   exit 1
-fi
-
 C=""
 while [ -n "$1" ]; do
     if [ "$1" = "--num" -o "$1" = "-n" ]; then
@@ -18,6 +13,11 @@ while [ -n "$1" ]; do
     fi
     shift
 done
+
+if [ -z "$QUERY" ]; then
+   echo "Must pass at least 1 ticket number"
+   exit 1
+fi
 
 A=$(mktemp)
 rt list "$QUERY" | sed -r 's/^([0-9]+): (.*)$/[[FGRT: \1 | #\1]] \2/' > $A
