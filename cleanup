@@ -18,6 +18,7 @@ echo "======================================"
 cd /git
 
 clean(){
+    echo "== $i =="
     if [ ! -w . ]; then
 	READONLY=t
     else
@@ -36,6 +37,27 @@ clean(){
     fi
 }
 
-usage
-for i in `ls | grep -v cleanup`; do cd $i; clean; cd ..; done
-usage
+QUIET=
+if [ "$1" = "-q" ]; then
+    QUIET=yep
+fi
+
+quiet() {
+    [ -n "$QUIET" ]
+}
+
+quiet_clean() {
+    if quiet; then
+	clean >/dev/null 2>/dev/null
+    else
+	clean
+    fi
+}
+
+if ! quiet; then
+    usage
+fi
+for i in `ls | grep -v cleanup`; do cd $i; quiet_clean; cd ..; done
+if ! quiet; then
+    usage
+fi

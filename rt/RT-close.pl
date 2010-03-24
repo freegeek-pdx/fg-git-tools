@@ -1,9 +1,5 @@
 #!/usr/bin/perl
 
-# TODO: have post-update run --pending on trunk and --close on the
-# tags. and make sure that ./script/release gets updated correctly wrt
-# order.
-
 use strict;
 use warnings;
 
@@ -30,7 +26,7 @@ my $opt = $ARGV[0] || "";
 
 my @restrict = ();
 
-my $debug = 0;
+my $debug = 1;
 
 if($opt eq "--git") {
     my $oldref = $ARGV[1];
@@ -41,11 +37,11 @@ if($opt eq "--git") {
     chomp $newref;
     if(!($oldref =~ /^0*$/ || $newref =~ /^0*$/)) {
         my $diff = `git diff $oldref..$newref | filterdiff -i '*ChangeLog*' -i '*changelog*' | grep ^+`;
-        if(length($diff) == 0) {
+        @restrict = get_closes($diff);
+	if(scalar(@restrict) == 0) {
             print "No bugs to check\n" if($debug);
             exit;
-        }
-        @restrict = get_closes($diff);
+	}
     }
     $opt = $ARGV[3] || "";
 }
@@ -74,7 +70,7 @@ $message .= "Here is the relevant changelog entry:\n";
 
 use RT::Client::REST::FromConfig;
 
-my $rt = RT::Client::REST::FromConfig->new();
+my $rt;
 
 my $in_entry = 0;
 my @entries;
@@ -111,6 +107,7 @@ foreach my $entry(@entries) {
   @closes = intersect(\@closes, \@restrict) if(scalar(@restrict) > 0);
   foreach my $bug(@closes) {
       print "Checking bug: $bug\n" if($debug);
+      $rt = RT::Client::REST::FromConfig->new() if(!defined($rt));
     my $ticket = RT::Client::REST::Ticket->new(rt => $rt, id => $bug)->retrieve;
     if($ticket->status ne $status) {
       print $action . " #" . $bug . "\n";
