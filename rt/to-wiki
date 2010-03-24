@@ -1,16 +1,36 @@
 #!/bin/sh
 
-if [ -z "$1" ]; then
+C=""
+while [ -n "$1" ]; do
+    if [ "$1" = "--num" -o "$1" = "-n" ]; then
+        C="$2"
+        shift
+    else
+        if [ -n "$QUERY" ]; then
+            QUERY="$QUERY OR "
+        fi
+        QUERY="${QUERY}id = '$1'"
+    fi
+    shift
+done
+
+if [ -z "$QUERY" ]; then
    echo "Must pass at least 1 ticket number"
    exit 1
 fi
 
-while [ -n "$1" ]; do
-      if [ -n "$QUERY" ]; then
-        QUERY="$QUERY OR "
-      fi
-      QUERY="${QUERY}id = '$1'"
-      shift
+A=$(mktemp)
+rt list "$QUERY" | sed -r 's/^([0-9]+): (.*)$/[[FGRT: \1 | #\1]] \2/' > $A
+B=""
+if [ -z "$C" ]; then
+    C=1
+fi
+for i in `seq 1 $C`; do
+    if [ -z "$B" ]; then
+        sed -i 's/^/ /g' $A
+        B=a
+    fi
+    sed -i 's/^/*/g' $A
 done
-
-rt list "$QUERY" | sed -r 's/^([0-9]+): (.*)$/* [[FGRT: \1 | #\1]] \2/'
+cat $A
+rm $A
