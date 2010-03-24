@@ -1,9 +1,5 @@
 #!/usr/bin/perl
 
-# TODO: have post-update run --pending on trunk and --close on the
-# tags. and make sure that ./script/release gets updated correctly wrt
-# order.
-
 use strict;
 use warnings;
 
@@ -28,6 +24,28 @@ chomp $version;
 
 my $opt = $ARGV[0] || "";
 
+my @restrict = ();
+
+my $debug = 1;
+
+if($opt eq "--git") {
+    my $oldref = $ARGV[1];
+    my $newref = $ARGV[2];
+    $oldref = `git rev-parse $oldref`;
+    $newref = `git rev-parse $newref`;
+    chomp $oldref;
+    chomp $newref;
+    if(!($oldref =~ /^0*$/ || $newref =~ /^0*$/)) {
+        my $diff = `git diff $oldref..$newref | filterdiff -i '*ChangeLog*' -i '*changelog*' | grep ^+`;
+        @restrict = get_closes($diff);
+	if(scalar(@restrict) == 0) {
+            print "No bugs to check\n" if($debug);
+            exit;
+	}
+    }
+    $opt = $ARGV[3] || "";
+}
+
 if($opt eq "--pending") {
   $status = "pending";
   $action = "tagging pending";
@@ -40,6 +58,8 @@ if($opt eq "--pending") {
   die("Usage: $0 --pending|--close");
 }
 
+print "In $action mode\n"  if($debug);
+
 use Text::Wrap;
 
 $Text::Wrap::columns = 72;
@@ -50,7 +70,7 @@ $message .= "Here is the relevant changelog entry:\n";
 
 use RT::Client::REST::FromConfig;
 
-my $rt = RT::Client::REST::FromConfig->new();
+my $rt;
 
 my $in_entry = 0;
 my @entries;
@@ -68,15 +88,26 @@ foreach(@list) {
 @entries = map {s/^  //; $_} @entries;
 
 sub get_closes {
-  return grep /\d/, split(/\D/, @{[shift =~ /\(closes:(.*)\)/sig]}[0] || 0);
+  return grep /[1-9]/, grep /\d/, split(/\D/, @{[shift =~ /\(closes:(.*)\)/sig]}[0] || 0);
 }
 
 use RT::Client::REST::Ticket;
 
+sub intersect {
+    my ($arr1, $arr2) = @_;
+    my %hash;
+    foreach(@$arr2) {
+        $hash{$_} = 1;
+    }
+    return grep { $hash{$_} } @$arr1;
+}
+
 foreach my $entry(@entries) {
   my @closes = get_closes($entry);
-  @closes = grep /[1-9]/, @closes;
+  @closes = intersect(\@closes, \@restrict) if(scalar(@restrict) > 0);
   foreach my $bug(@closes) {
+      print "Checking bug: $bug\n" if($debug);
+      $rt = RT::Client::REST::FromConfig->new() if(!defined($rt));
     my $ticket = RT::Client::REST::Ticket->new(rt => $rt, id => $bug)->retrieve;
     if($ticket->status ne $status) {
       print $action . " #" . $bug . "\n";
