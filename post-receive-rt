@@ -25,6 +25,9 @@ while read oldrev newrev refname; do
     branch=$(basename $refname)
     mode=""
     if [ -f .git/refs/remotes/origin/$branch ]; then # it's a branch
+	if [ "$branch" = "library" ]; then
+	    continue
+	fi
         if [ -f .git/refs/heads/$branch ]; then
             git checkout -q $branch | quiet
             git pull -q origin $branch 2>&1 | quiet
