@@ -42,6 +42,7 @@ while read oldrev newrev refname; do
             fi
         fi
     else # it's a tag
+	branch=$(echo $refname | cut -d / -f 3-)
         { git branch -D temptag 2>&1 || true; } | quiet
         git checkout -b temptag $branch | quiet
 	mode="--close"
