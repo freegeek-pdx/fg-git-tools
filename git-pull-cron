@@ -24,4 +24,8 @@ git pull 2>&1 > $T
 RET=$?
 cat $T | grep -v Already
 rm $T
+CHOWN_TO="$(git config fg.chown)"
+if [ -n "$CHOWN_TO" ]; then
+    chown -R "$CHOWN_TO" .
+fi
 exit $RET
