@@ -54,6 +54,7 @@ quiet_clean() {
     fi
 }
 
+rm -fr /var/cache/git-checkouts/*
 if ! quiet; then
     usage
 fi
