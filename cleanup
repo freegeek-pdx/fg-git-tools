@@ -1,6 +1,8 @@
 #!/bin/sh
 
-exec 2>&1
+#exec 2>&1
+
+set -e
 
 U=ryan52
 
@@ -57,7 +59,7 @@ quiet_clean() {
 if ! quiet; then
     usage
 fi
-for i in `ls | grep -v cleanup`; do cd $i; quiet_clean; cd ..; done
+for i in `ls | grep -v cleanup  |grep -v allowed_list`; do cd $i; quiet_clean; cd ..; done
 if ! quiet; then
     usage
 fi

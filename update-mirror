@@ -20,7 +20,7 @@ for i2 in /tmp/git/*; do
     git fetch origin --tags --quiet
     for i3 in $(git ls-remote origin | grep /heads/ | cut -d / -f 3); do git branch -f "$i3" "origin/$i3" >/dev/null; done
     for i3 in $(diff <(git branch | sed 's/^..//') <(git ls-remote origin | grep /heads/ | cut -d / -f 3) | grep '^<' | sed 's/^< //'); do git branch -D "$i3" >/dev/null; done
-    echo "Mirror of $(basename $(pwd)): $(ssh $(git-config remote.origin.url | awk -F: '{print $1}') cat $(git-config remote.origin.url | awk -F: '{print $2}')/description)" > description
+    echo "Mirror of $(basename $(pwd)): $(ssh $(git config remote.origin.url | awk -F: '{print $1}') cat $(git config remote.origin.url | awk -F: '{print $2}')/description)" > description
     chmod -R a-w .
     cd ..
     sudo rm "$i2"

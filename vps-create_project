@@ -85,5 +85,8 @@ fi
 echo "git://$HOSTNAME/git/$PROJECT" > /git/$PROJECT/cloneurl
 echo "http://$HOSTNAME/git/$PROJECT" >> /git/$PROJECT/cloneurl
 echo "$HOSTNAME:/git/$PROJECT" >> /git/$PROJECT/cloneurl
+if [ -f /git/$PROJECT/hooks/post-update.sample ]; then
+    mv /git/$PROJECT/hooks/post-update.sample /git/$PROJECT/hooks/post-update
+fi
 chmod +x /git/$PROJECT/hooks/post-update
 touch /git/$PROJECT/git-daemon-export-ok
