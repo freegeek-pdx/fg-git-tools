@@ -4,7 +4,7 @@
 # TODO: use start-stop-daemon with the --background option
 [ "$1" = "go" ] || exec /usr/local/bin/daemon "$(readlink -f $0)" "go" "$@"
 shift
-
+exec 2>&1 >/var/log/mirror-daemon # /home/ryan52/log
 # TODO: use inotify-tools
 
 while true; do
