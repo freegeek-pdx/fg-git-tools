@@ -9,8 +9,8 @@ exec 2>&1 >/home/mirror-daemon/mirror-daemon.log
 
 while true; do
     if [ -f /tmp/update-requested ]; then
-	sudo rm /tmp/update-requested
-	/home/ryan52/update-mirror || touch /tmp/update-requested
+	rm /tmp/update-requested
+	/home/mirror-daemon/fg-git-tools/update-mirror || touch /tmp/update-requested
     else
 	sleep 1
     fi
