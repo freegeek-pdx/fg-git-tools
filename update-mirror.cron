@@ -1,0 +1,9 @@
+MAILTO=mirror-daemon
+#*/5 * * * * mirror-daemon /home/mirror-daemon/update-mirror
+@reboot mirror-daemon /home/mirror-daemon/mirror-daemon
+0 0 * * * root /home/mirror-daemon/fg-git-tools/nightly-run.sh
+
+47 6	* * 7	root	/home/mirror-daemon/fg-git-tools/cleanup -q
+*/5 * * * * root /home/mirror-daemon/fg-git-tools/git-pull-cron /var/www/reusewebsite/
+
+* * * * * root chown -f -R mirror-daemon /tmp/update-requested /tmp/git || true

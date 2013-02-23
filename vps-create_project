@@ -75,8 +75,14 @@ if ! update; then
 	fi
     fi
     cd /git
-    sudo mkdir $PROJECT
-    sudo chown $USER:$USER $PROJECT
+    if [ "$USER" = "mirror-daemon" ]; then
+	chmod +w .
+	mkdir $PROJECT
+	chmod -w .
+    else
+	sudo mkdir $PROJECT
+	sudo chown $USER:$USER $PROJECT
+    fi
     cd $PROJECT
     git --bare init --shared
     if description; then

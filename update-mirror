@@ -8,7 +8,7 @@ if [ -n "$(ls /tmp/git/* 2>/dev/null)" ]; then
 for i2 in /tmp/git/*; do
     i="$(basename "$i2")"
     if [ ! -d "/git/$i" ]; then
-	/home/ryan52/fg-git-tools/vps-create_project --nodesc "$i" </dev/null
+	/home/mirror-daemon/fg-git-tools/vps-create_project --nodesc "$i" </dev/null
 	cd "/git/$i"
 	echo '[remote "origin"]' >> "/git/$i/config"
 	echo "url = dev.freegeek.org:/git/$i" >> "/git/$i/config"
@@ -23,6 +23,6 @@ for i2 in /tmp/git/*; do
     echo "Mirror of $(basename $(pwd)): $(ssh $(git config remote.origin.url | awk -F: '{print $1}') cat $(git config remote.origin.url | awk -F: '{print $2}')/description)" > description
     chmod -R a-w .
     cd ..
-    sudo rm "$i2"
+    rm "$i2"
 done
 fi

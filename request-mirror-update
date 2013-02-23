@@ -3,5 +3,8 @@
 # pfft. insecure temp file vulnerabilities are awesome.
 
 touch /tmp/update-requested
-mkdir -p /tmp/$1
+if [ ! -d /tmp/$1 ]; then
+    mkdir -p /tmp/$1
+    chown mirror-daemon:www-data /tmp/$1
+fi
 touch /tmp/$1/$2
