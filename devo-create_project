@@ -67,14 +67,18 @@ if ! update; then
 fi
 
 add_ml() {
-echo -n "Commit mailing list (only the part before the @): "
+echo -n "Commit mailing list name (only the part before the @lists.freegeek.org, or empty for none): "
 read listname
 cat - >> /git/$PROJECT/config <<EOF
 [hooks]
-        mailinglist = $listname@lists.freegeek.org
         envelopesender = svn@freegeek.org
 	announcelist = coders@lists.freegeek.org
 EOF
+if [ -n "$listname" ]; then
+cat - >> /git/$PROJECT/config <<EOF
+        mailinglist = $listname@lists.freegeek.org
+EOF
+fi
 }
 
 sudo chown -R $USER:svn /git/$PROJECT/
