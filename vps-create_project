@@ -98,3 +98,5 @@ if [ -f /git/$PROJECT/hooks/post-update.sample ]; then
 fi
 chmod +x /git/$PROJECT/hooks/post-update
 touch /git/$PROJECT/git-daemon-export-ok
+cd /git/$PROJECT/
+./hooks/post-update
