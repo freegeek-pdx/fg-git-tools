@@ -4,8 +4,8 @@
 
 set -e
 
-if [ -n "$(ls /tmp/git/* 2>/dev/null)" ]; then
-for i2 in /tmp/git/*; do
+if [ -n "$(ls /var/cache/mirror-daemon/git/* 2>/dev/null)" ]; then
+for i2 in /var/cache/mirror-daemon/git/*; do
     i="$(basename "$i2")"
     if [ ! -d "/git/$i" ]; then
 	/home/mirror-daemon/fg-git-tools/vps-create_project --nodesc "$i" </dev/null
