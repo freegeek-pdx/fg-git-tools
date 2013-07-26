@@ -10,7 +10,17 @@ OTHER_HOSTNAME=git.freegeek.info
 
 usage(){
     echo "Usage: $(basename $0) [--update] projectname|all"
-    exit 1
+    echo "       $(basename $0) [OPTIONS] projectname"
+    echo 
+    echo "       -h display this message"
+    echo "       -d \"project description\"   (use quotes)"
+    echo "       -l listname   (the part before the @symbol only)"
+    echo "       -u username   (who owns the repository)"
+    if $1; then
+        exit $1
+    else
+        exit 1
+    fi
 }
 
 update(){
@@ -18,6 +28,21 @@ update(){
 }
 
 UPDATE="false"
+
+
+# process option arguments
+while getopts "hd:l:u:" option; do           
+    case "$option" in
+        h) usage 0;;
+        d) DESC=$OPTARG
+            shift $((OPTIND-1));;
+        l) LISTNAME=$OPTARG
+            shift $((OPTIND-1));;
+        u) USER=$OPTARG
+            shift $((OPTIND-1));;
+    esac
+done
+
 
 if [ "$1" = "--update" ]; then
     PROJECT="$2"
@@ -52,11 +77,13 @@ if [ ! -d "/git/$PROJECT" ] && update; then
 fi
 
 if ! update; then
-    echo -n "Project description: "
-    read DESC
-    if [ "$?" != "0" ]; then
-	echo "Aborted."
-	exit 1
+    if ! $DESC; then
+        echo -n "Project description: "
+        read DESC
+        if [ "$?" != "0" ]; then
+	        echo "Aborted."
+	        exit 1
+        fi
     fi
     cd /git
     sudo mkdir $PROJECT
@@ -67,11 +94,13 @@ if ! update; then
 fi
 
 add_ml() {
-echo -n "Commit mailing list (only the part before the @): "
-read listname
+if ! $LISTNAME; then
+    echo -n "Commit mailing list (only the part before the @): "
+    read LISTNAME
+fi
 cat - >> /git/$PROJECT/config <<EOF
 [hooks]
-        mailinglist = $listname@lists.freegeek.org
+        mailinglist = $LISTNAME@lists.freegeek.org
         envelopesender = svn@freegeek.org
 	announcelist = coders@lists.freegeek.org
 EOF
