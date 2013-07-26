@@ -2,9 +2,10 @@
 
 # pfft. insecure temp file vulnerabilities are awesome.
 
-touch /tmp/update-requested
-if [ ! -d /tmp/$1 ]; then
-    mkdir -p /tmp/$1
-    chown mirror-daemon:www-data /tmp/$1
+touch /var/cache/mirror-daemon/update-requested
+if [ ! -d /var/cache/mirror-daemon/$1 ]; then
+    mkdir -p /var/cache/mirror-daemon/$1
+    chown mirror-daemon:www-data /var/cache/mirror-daemon/$1
+    chmod g+w /var/cache/mirror-daemon/$1
 fi
-touch /tmp/$1/$2
+touch /var/cache/mirror-daemon/$1/$2

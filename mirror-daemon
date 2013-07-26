@@ -8,9 +8,9 @@ exec 2>&1 >/home/mirror-daemon/mirror-daemon.log
 # TODO: use inotify-tools
 
 while true; do
-    if [ -f /tmp/update-requested ]; then
-	rm /tmp/update-requested
-	/home/mirror-daemon/fg-git-tools/update-mirror || touch /tmp/update-requested
+    if [ -f /var/cache/mirror-daemon/update-requested ]; then
+	rm /var/cache/mirror-daemon/update-requested
+	/home/mirror-daemon/fg-git-tools/update-mirror || touch /var/cache/mirror-daemon/update-requested
     else
 	sleep 1
     fi

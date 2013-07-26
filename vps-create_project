@@ -5,8 +5,10 @@
 # Set your domain name here, as you want it to be displayed:
 if hostname -f | grep -q xyzzy; then
     HOSTNAME=git.ryan52.info
+    DEV_HOSTNAME="$HOSTNAME"
 elif hostname -f | grep -q oahu; then
     HOSTNAME=git.freegeek.org
+    DEV_HOSTNAME="dev.freegeek.org"
 else
     echo "Unknown host: $(hostname -f)"
     exit 1
@@ -90,9 +92,11 @@ fi
 
 echo "git://$HOSTNAME/git/$PROJECT" > /git/$PROJECT/cloneurl
 echo "http://$HOSTNAME/git/$PROJECT" >> /git/$PROJECT/cloneurl
-echo "$HOSTNAME:/git/$PROJECT" >> /git/$PROJECT/cloneurl
+echo "$DEV_HOSTNAME:/git/$PROJECT" >> /git/$PROJECT/cloneurl
 if [ -f /git/$PROJECT/hooks/post-update.sample ]; then
     mv /git/$PROJECT/hooks/post-update.sample /git/$PROJECT/hooks/post-update
 fi
 chmod +x /git/$PROJECT/hooks/post-update
 touch /git/$PROJECT/git-daemon-export-ok
+cd /git/$PROJECT/
+./hooks/post-update

@@ -6,4 +6,4 @@ MAILTO=mirror-daemon
 47 6	* * 7	root	/home/mirror-daemon/fg-git-tools/cleanup -q
 */5 * * * * root /home/mirror-daemon/fg-git-tools/git-pull-cron /var/www/reusewebsite/
 
-* * * * * root chown -f -R mirror-daemon /tmp/update-requested /tmp/git || true
+* * * * * root chown -f -R mirror-daemon /var/cache/mirror-daemon/update-requested /var/cache/mirror-daemon/git || true

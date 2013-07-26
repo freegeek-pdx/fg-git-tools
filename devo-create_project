@@ -15,6 +15,7 @@ usage(){
     echo "       -h display this message"
     echo "       -d \"project description\"   (use quotes)"
     echo "       -l listname   (the part before the @symbol only)"
+    echo "       -N  no commit list" 
     echo "       -u username   (who owns the repository)"
     if $1; then
         exit $1
@@ -31,18 +32,25 @@ UPDATE="false"
 
 
 # process option arguments
-while getopts "hd:l:u:" option; do           
+while getopts "hd:l:Nu:" option; do           
     case "$option" in
         h) usage 0;;
         d) DESC=$OPTARG
             shift $((OPTIND-1));;
         l) LISTNAME=$OPTARG
             shift $((OPTIND-1));;
+        N) NOLIST="true"
+            shift $((OPTIND-1));;
         u) USER=$OPTARG
             shift $((OPTIND-1));;
     esac
 done
 
+if [[ $listname && $NOLIST ]] ; then
+    echo "the -l and -N options are mutually exclusive"
+    echo
+    usage 3
+fi
 
 if [ "$1" = "--update" ]; then
     PROJECT="$2"
@@ -94,21 +102,21 @@ if ! update; then
 fi
 
 add_ml() {
-if ! $LISTNAME; then
+if ! $LISTNAME && ! $NOLIST; then
     echo -n "Commit mailing list (only the part before the @): "
     read LISTNAME
 fi
+if [ -n "$LISTNAME" ]; then
 cat - >> /git/$PROJECT/config <<EOF
-[hooks]
         mailinglist = $LISTNAME@lists.freegeek.org
-        envelopesender = svn@freegeek.org
-	announcelist = coders@lists.freegeek.org
 EOF
+fi
 }
 
 sudo chown -R $USER:svn /git/$PROJECT/
 echo "git://$OTHER_HOSTNAME/git/$PROJECT" > /git/$PROJECT/cloneurl
 echo "$HOSTNAME:/git/$PROJECT" >> /git/$PROJECT/cloneurl
+LSI
 grep -q mailinglist /git/$PROJECT/config || add_ml
 ln -sf /home/ryan52/fg-git-tools/post-receive /git/$PROJECT/hooks/post-receive
 ln -sf /home/ryan52/fg-git-tools/post-update /git/$PROJECT/hooks/post-update
